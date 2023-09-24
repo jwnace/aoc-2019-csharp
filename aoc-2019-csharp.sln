@@ -1,11 +1,11 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{318E5B06-7F29-494C-8D9A-D34EFDF8ACBB}") = "aoc-2019-csharp", "src\aoc-2019-csharp\aoc-2019-csharp.csproj", "{632FCA20-47C9-4B50-AADD-C00008737E82}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E7B37013-19E0-4C91-89AF-34C8B26AE552}"
 EndProject
-Project("{EF471514-40A7-4372-AF51-9A18604C5E5B}") = "src", "src", "{DB0D1E67-79F2-4353-89D3-AA9F760BF0DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aoc-2019-csharp", "src\aoc-2019-csharp\aoc-2019-csharp.csproj", "{AAE62C86-A3AD-49B4-B3F7-F15A115E6FAD}"
 EndProject
-Project("{EF471514-40A7-4372-AF51-9A18604C5E5B}") = "tests", "tests", "{23A838FE-4799-4D14-81E5-AA292571FE2A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{94C17D8E-F16B-4EAF-87C1-2247FF73E3EF}"
 EndProject
-Project("{318E5B06-7F29-494C-8D9A-D34EFDF8ACBB}") = "aoc-2019-csharp-tests", "tests\aoc-2019-csharp-tests\aoc-2019-csharp-tests.csproj", "{8BCEC038-97D0-4465-8E13-4FECD3D0DA28}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aoc-2019-csharp-tests", "tests\aoc-2019-csharp-tests\aoc-2019-csharp-tests.csproj", "{5CB65406-E812-494D-8471-319F7815FA27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,17 +13,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{632FCA20-47C9-4B50-AADD-C00008737E82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{632FCA20-47C9-4B50-AADD-C00008737E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{632FCA20-47C9-4B50-AADD-C00008737E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{632FCA20-47C9-4B50-AADD-C00008737E82}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8BCEC038-97D0-4465-8E13-4FECD3D0DA28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BCEC038-97D0-4465-8E13-4FECD3D0DA28}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BCEC038-97D0-4465-8E13-4FECD3D0DA28}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BCEC038-97D0-4465-8E13-4FECD3D0DA28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAE62C86-A3AD-49B4-B3F7-F15A115E6FAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAE62C86-A3AD-49B4-B3F7-F15A115E6FAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAE62C86-A3AD-49B4-B3F7-F15A115E6FAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAE62C86-A3AD-49B4-B3F7-F15A115E6FAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CB65406-E812-494D-8471-319F7815FA27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CB65406-E812-494D-8471-319F7815FA27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CB65406-E812-494D-8471-319F7815FA27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CB65406-E812-494D-8471-319F7815FA27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{632FCA20-47C9-4B50-AADD-C00008737E82} = {DB0D1E67-79F2-4353-89D3-AA9F760BF0DD}
-		{8BCEC038-97D0-4465-8E13-4FECD3D0DA28} = {23A838FE-4799-4D14-81E5-AA292571FE2A}
+		{AAE62C86-A3AD-49B4-B3F7-F15A115E6FAD} = {E7B37013-19E0-4C91-89AF-34C8B26AE552}
+		{5CB65406-E812-494D-8471-319F7815FA27} = {94C17D8E-F16B-4EAF-87C1-2247FF73E3EF}
 	EndGlobalSection
 EndGlobal
