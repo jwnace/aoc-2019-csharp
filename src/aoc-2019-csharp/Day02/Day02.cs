@@ -6,7 +6,7 @@ public static class Day02
 {
     private static readonly int[] Input = File.ReadAllText("Day02/day02.txt").Split(',').Select(int.Parse).ToArray();
 
-    public static int Part1() => IntcodeComputer.RunProgram(Input.ToArray(), 12, 2);
+    public static int Part1() => new IntcodeComputer().RunProgram(Input.ToArray(), 12, 2);
 
     public static int Part2()
     {
@@ -14,7 +14,7 @@ public static class Day02
         {
             for (var j = 0; j < 100; j++)
             {
-                if (IntcodeComputer.RunProgram(Input.ToArray(), i, j) == 19690720)
+                if (new IntcodeComputer().RunProgram(Input.ToArray(), i, j) == 19690720)
                 {
                     return 100 * i + j;
                 }
