@@ -2,19 +2,9 @@
 
 public static class Day02
 {
-    private static readonly List<int> Input = File.ReadAllText("Day02/day02.txt").Split(',').Select(int.Parse).ToList();
+    private static readonly int[] Input = File.ReadAllText("Day02/day02.txt").Split(',').Select(int.Parse).ToArray();
 
-    public static int Part1()
-    {
-        var buffer = Input.ToList();
-
-        buffer[1] = 12;
-        buffer[2] = 2;
-
-        RunProgram(buffer);
-
-        return buffer[0];
-    }
+    public static int Part1() => RunProgram(Input.ToArray(), 12, 2);
 
     public static int Part2()
     {
@@ -22,14 +12,7 @@ public static class Day02
         {
             for (var j = 0; j < 100; j++)
             {
-                var buffer = Input.ToList();
-
-                buffer[1] = i;
-                buffer[2] = j;
-
-                RunProgram(buffer);
-
-                if (buffer[0] == 19690720)
+                if (RunProgram(Input.ToArray(), i, j) == 19690720)
                 {
                     return 100 * i + j;
                 }
@@ -39,30 +22,28 @@ public static class Day02
         return 0;
     }
 
-    private static void RunProgram(List<int> buffer)
+    private static int RunProgram(int[] buffer, int noun, int verb)
     {
-        for (var i = 0; i < buffer.Count; i++)
+        buffer[1] = noun;
+        buffer[2] = verb;
+
+        for (var i = 0; i < buffer.Length; i += 4)
         {
-            if (buffer[i] == 1)
-            {
-                var (a, b, c) = (buffer[i + 1], buffer[i + 2], buffer[i + 3]);
-                buffer[c] = buffer[a] + buffer[b];
-                i += 3;
-            }
-            else if (buffer[i] == 2)
-            {
-                var (a, b, c) = (buffer[i + 1], buffer[i + 2], buffer[i + 3]);
-                buffer[c] = buffer[a] * buffer[b];
-                i += 3;
-            }
-            else if (buffer[i] == 99)
+            if (buffer[i] == 99)
             {
                 break;
             }
-            else
+
+            var (a, b, c) = (buffer[i + 1], buffer[i + 2], buffer[i + 3]);
+
+            buffer[c] = buffer[i] switch
             {
-                throw new Exception($"Invalid opcode {buffer[i]} at position {i}");
-            }
+                1 => buffer[a] + buffer[b],
+                2 => buffer[a] * buffer[b],
+                _ => throw new Exception($"Invalid opcode {buffer[i]} at position {i}")
+            };
         }
+
+        return buffer[0];
     }
 }
