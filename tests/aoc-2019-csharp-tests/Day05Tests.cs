@@ -14,10 +14,7 @@ public class Day05Tests
 
         sut.Run();
 
-        var outputs = sut.GetOutputs();
-
-        outputs.Should().ContainSingle();
-        outputs[0].Should().Be(inputs[0]);
+        sut.Output.Should().Be(inputs[0]);
     }
 
     [Test]
@@ -69,8 +66,7 @@ public class Day05Tests
 
         sut.Run();
 
-        var outputs = sut.GetOutputs();
-        outputs.Last().Should().Be(expected);
+        sut.Output.Should().Be(expected);
     }
 
     [Test]

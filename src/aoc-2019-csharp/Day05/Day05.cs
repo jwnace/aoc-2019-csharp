@@ -17,7 +17,6 @@ public static class Day05
 
         computer.Run();
 
-        var outputs = computer.GetOutputs();
-        return outputs.Last();
+        return computer.Output;
     }
 }

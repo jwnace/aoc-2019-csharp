@@ -5,6 +5,7 @@ public class IntcodeComputer
     private readonly int[] _memory;
     private int[] _inputs;
     private int[] _outputs;
+    private int _currentInstruction;
 
     public IntcodeComputer(int[] memory)
     {
@@ -20,35 +21,46 @@ public class IntcodeComputer
         _outputs = Array.Empty<int>();
     }
 
-    public int[] GetOutputs() => _outputs.ToArray();
+    public bool HasHalted { get; private set; }
+
+    public int Output => _outputs.Last();
 
     public int Run(int? noun = null, int? verb = null)
     {
         _memory[1] = noun ?? _memory[1];
         _memory[2] = verb ?? _memory[2];
 
-        for (var i = 0; i < _memory.Length;)
+        while (_currentInstruction < _memory.Length)
         {
-            var instruction = _memory[i].ToString().PadLeft(5, '0');
+            var instruction = _memory[_currentInstruction].ToString().PadLeft(5, '0');
             var opcode = int.Parse(instruction[^2..]);
 
             if (opcode == 99)
             {
+                HasHalted = true;
                 break;
             }
 
-            i = opcode switch
+            var previousInstruction = _currentInstruction;
+
+            _currentInstruction = opcode switch
             {
-                1 => ProcessAdditionInstruction(instruction, i),
-                2 => ProcessMultiplicationInstruction(instruction, i),
-                3 => ProcessInputInstruction(i),
-                4 => ProcessOutputInstruction(instruction, i),
-                5 => ProcessJumpIfTrueInstruction(instruction, i),
-                6 => ProcessJumpIfFalseInstruction(instruction, i),
-                7 => ProcessLessThanInstruction(instruction, i),
-                8 => ProcessEqualsInstruction(instruction, i),
-                _ => throw new Exception($"Invalid opcode {opcode} at position {i}")
+                1 => ProcessAdditionInstruction(instruction, _currentInstruction),
+                2 => ProcessMultiplicationInstruction(instruction, _currentInstruction),
+                3 => ProcessInputInstruction(_currentInstruction),
+                4 => ProcessOutputInstruction(instruction, _currentInstruction),
+                5 => ProcessJumpIfTrueInstruction(instruction, _currentInstruction),
+                6 => ProcessJumpIfFalseInstruction(instruction, _currentInstruction),
+                7 => ProcessLessThanInstruction(instruction, _currentInstruction),
+                8 => ProcessEqualsInstruction(instruction, _currentInstruction),
+                _ => throw new Exception($"Invalid opcode {opcode} at position {_currentInstruction}")
             };
+
+            // if we didn't move the instruction pointer, we need to break out of the loop
+            if (_currentInstruction == previousInstruction)
+            {
+                break;
+            }
         }
 
         return _memory[0];
@@ -80,6 +92,12 @@ public class IntcodeComputer
 
     private int ProcessInputInstruction(int i)
     {
+        // if we don't have any inputs, wait until we do
+        if (_inputs.Length == 0)
+        {
+            return i;
+        }
+
         var a = _memory[i + 1];
         _memory[a] = _inputs[0];
         _inputs = _inputs[1..];
@@ -145,4 +163,7 @@ public class IntcodeComputer
 
         return i + 4;
     }
+
+    public void AddInput(int value) =>
+        _inputs = _inputs.Append(value).ToArray();
 }
