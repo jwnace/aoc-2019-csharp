@@ -2,7 +2,7 @@ namespace aoc_2019_csharp.Shared;
 
 public class IntcodeComputer
 {
-    private int[] _memory;
+    private readonly int[] _memory;
     private int[] _inputs;
     private int[] _outputs;
 
@@ -15,7 +15,7 @@ public class IntcodeComputer
 
     public IntcodeComputer(int[] memory, int[] inputs)
     {
-        _memory = memory;
+        _memory = memory.ToArray();
         _inputs = inputs;
         _outputs = Array.Empty<int>();
     }

@@ -13,7 +13,7 @@ public static class Day05
     private static int Run(int input)
     {
         var inputs = new[] { input };
-        var computer = new IntcodeComputer(Input.ToArray(), inputs);
+        var computer = new IntcodeComputer(Input, inputs);
 
         computer.Run();
 
