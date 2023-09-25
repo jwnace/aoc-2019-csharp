@@ -2,38 +2,34 @@ namespace aoc_2019_csharp.Shared;
 
 public class IntcodeComputer
 {
+    private int[] _memory;
     private int[] _inputs;
     private int[] _outputs;
 
-    public IntcodeComputer()
+    public IntcodeComputer(int[] memory)
     {
+        _memory = memory.ToArray();
         _inputs = Array.Empty<int>();
         _outputs = Array.Empty<int>();
     }
 
-    public IntcodeComputer(int[] inputs)
+    public IntcodeComputer(int[] memory, int[] inputs)
     {
+        _memory = memory;
         _inputs = inputs;
         _outputs = Array.Empty<int>();
     }
 
-    public IntcodeComputer(int[] inputs, int[] outputs)
+    public int[] GetOutputs() => _outputs.ToArray();
+
+    public int Run(int? noun = null, int? verb = null)
     {
-        _inputs = inputs;
-        _outputs = outputs;
-    }
+        _memory[1] = noun ?? _memory[1];
+        _memory[2] = verb ?? _memory[2];
 
-    public int[] GetOutputs() => _outputs;
-
-    public int RunProgram(int[] buffer, int? noun = null, int? verb = null)
-    {
-        buffer[1] = noun ?? buffer[1];
-        buffer[2] = verb ?? buffer[2];
-
-        for (var i = 0; i < buffer.Length;)
+        for (var i = 0; i < _memory.Length;)
         {
-            // HACK: fill in any missing parameter modes with 0
-            var instruction = buffer[i].ToString().PadLeft(5, '0');
+            var instruction = _memory[i].ToString().PadLeft(5, '0');
             var opcode = int.Parse(instruction[^2..]);
 
             if (opcode == 99)
@@ -46,12 +42,12 @@ public class IntcodeComputer
                 case 1:
                 {
                     var (aMode, bMode) = (instruction[2], instruction[1]);
-                    var (a, b, c) = (buffer[i + 1], buffer[i + 2], buffer[i + 3]);
+                    var (a, b, c) = (_memory[i + 1], _memory[i + 2], _memory[i + 3]);
 
-                    var aValue = aMode == '0' ? buffer[a] : a;
-                    var bValue = bMode == '0' ? buffer[b] : b;
+                    var aValue = aMode == '0' ? _memory[a] : a;
+                    var bValue = bMode == '0' ? _memory[b] : b;
 
-                    buffer[c] = aValue + bValue;
+                    _memory[c] = aValue + bValue;
 
                     i += 4;
                     break;
@@ -59,20 +55,20 @@ public class IntcodeComputer
                 case 2:
                 {
                     var (aMode, bMode) = (instruction[2], instruction[1]);
-                    var (a, b, c) = (buffer[i + 1], buffer[i + 2], buffer[i + 3]);
+                    var (a, b, c) = (_memory[i + 1], _memory[i + 2], _memory[i + 3]);
 
-                    var aValue = aMode == '0' ? buffer[a] : a;
-                    var bValue = bMode == '0' ? buffer[b] : b;
+                    var aValue = aMode == '0' ? _memory[a] : a;
+                    var bValue = bMode == '0' ? _memory[b] : b;
 
-                    buffer[c] = aValue * bValue;
+                    _memory[c] = aValue * bValue;
 
                     i += 4;
                     break;
                 }
                 case 3:
                 {
-                    var parameter = buffer[i + 1];
-                    buffer[parameter] = _inputs[0];
+                    var parameter = _memory[i + 1];
+                    _memory[parameter] = _inputs[0];
                     _inputs = _inputs[1..];
                     i += 2;
                     break;
@@ -81,9 +77,9 @@ public class IntcodeComputer
                 {
                     var aMode = instruction[2];
 
-                    var a = buffer[i + 1];
+                    var a = _memory[i + 1];
 
-                    var aValue = aMode == '0' ? buffer[a] : a;
+                    var aValue = aMode == '0' ? _memory[a] : a;
 
                     _outputs = _outputs.Append(aValue).ToArray();
                     i += 2;
@@ -92,10 +88,10 @@ public class IntcodeComputer
                 case 5:
                 {
                     var (aMode, bMode) = (instruction[2], instruction[1]);
-                    var (a, b) = (buffer[i + 1], buffer[i + 2]);
+                    var (a, b) = (_memory[i + 1], _memory[i + 2]);
 
-                    var aValue = aMode == '0' ? buffer[a] : a;
-                    var bValue = bMode == '0' ? buffer[b] : b;
+                    var aValue = aMode == '0' ? _memory[a] : a;
+                    var bValue = bMode == '0' ? _memory[b] : b;
 
                     if (aValue != 0)
                     {
@@ -111,10 +107,10 @@ public class IntcodeComputer
                 case 6:
                 {
                     var (aMode, bMode) = (instruction[2], instruction[1]);
-                    var (a, b) = (buffer[i + 1], buffer[i + 2]);
+                    var (a, b) = (_memory[i + 1], _memory[i + 2]);
 
-                    var aValue = aMode == '0' ? buffer[a] : a;
-                    var bValue = bMode == '0' ? buffer[b] : b;
+                    var aValue = aMode == '0' ? _memory[a] : a;
+                    var bValue = bMode == '0' ? _memory[b] : b;
 
                     if (aValue == 0)
                     {
@@ -130,12 +126,12 @@ public class IntcodeComputer
                 case 7:
                 {
                     var (aMode, bMode) = (instruction[2], instruction[1]);
-                    var (a, b, c) = (buffer[i + 1], buffer[i + 2], buffer[i + 3]);
+                    var (a, b, c) = (_memory[i + 1], _memory[i + 2], _memory[i + 3]);
 
-                    var aValue = aMode == '0' ? buffer[a] : a;
-                    var bValue = bMode == '0' ? buffer[b] : b;
+                    var aValue = aMode == '0' ? _memory[a] : a;
+                    var bValue = bMode == '0' ? _memory[b] : b;
 
-                    buffer[c] = aValue < bValue ? 1 : 0;
+                    _memory[c] = aValue < bValue ? 1 : 0;
 
                     i += 4;
                     break;
@@ -143,12 +139,12 @@ public class IntcodeComputer
                 case 8:
                 {
                     var (aMode, bMode) = (instruction[2], instruction[1]);
-                    var (a, b, c) = (buffer[i + 1], buffer[i + 2], buffer[i + 3]);
+                    var (a, b, c) = (_memory[i + 1], _memory[i + 2], _memory[i + 3]);
 
-                    var aValue = aMode == '0' ? buffer[a] : a;
-                    var bValue = bMode == '0' ? buffer[b] : b;
+                    var aValue = aMode == '0' ? _memory[a] : a;
+                    var bValue = bMode == '0' ? _memory[b] : b;
 
-                    buffer[c] = aValue == bValue ? 1 : 0;
+                    _memory[c] = aValue == bValue ? 1 : 0;
 
                     i += 4;
                     break;
@@ -160,6 +156,6 @@ public class IntcodeComputer
             }
         }
 
-        return buffer[0];
+        return _memory[0];
     }
 }

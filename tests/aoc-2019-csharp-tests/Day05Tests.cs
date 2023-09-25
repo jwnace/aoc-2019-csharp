@@ -8,12 +8,11 @@ public class Day05Tests
     [Test]
     public void Part1_Example_ReturnsCorrectAnswer()
     {
+        var memory = new[] { 3, 0, 4, 0, 99 };
         var inputs = new[] { 69 };
-        var sut = new IntcodeComputer(inputs);
+        var sut = new IntcodeComputer(memory, inputs);
 
-        var buffer = new[] { 3, 0, 4, 0, 99 };
-
-        sut.RunProgram(buffer);
+        sut.Run();
 
         var outputs = sut.GetOutputs();
 
@@ -63,12 +62,12 @@ public class Day05Tests
         3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31, 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4,
         20, 1105, 1, 46, 104, 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99
     }, 9, 1001)]
-    public void Part2_Examples_ReturnCorrectAnswer(int[] buffer, int input, int expected)
+    public void Part2_Examples_ReturnCorrectAnswer(int[] memory, int input, int expected)
     {
         var inputs = new[] { input };
-        var sut = new IntcodeComputer(inputs);
+        var sut = new IntcodeComputer(memory, inputs);
 
-        sut.RunProgram(buffer);
+        sut.Run();
 
         var outputs = sut.GetOutputs();
         outputs.Last().Should().Be(expected);
