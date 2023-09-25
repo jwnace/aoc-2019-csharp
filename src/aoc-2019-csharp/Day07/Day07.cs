@@ -24,19 +24,19 @@ public static class Day07
             var amplifierA = new IntcodeComputer(input, new[] { phases[0], 0 });
             amplifierA.Run();
 
-            var amplifierB = new IntcodeComputer(input, new[] { phases[1], amplifierA.GetOutputs().Last() });
+            var amplifierB = new IntcodeComputer(input, new[] { phases[1], amplifierA.Output });
             amplifierB.Run();
 
-            var amplifierC = new IntcodeComputer(input, new[] { phases[2], amplifierB.GetOutputs().Last() });
+            var amplifierC = new IntcodeComputer(input, new[] { phases[2], amplifierB.Output });
             amplifierC.Run();
 
-            var amplifierD = new IntcodeComputer(input, new[] { phases[3], amplifierC.GetOutputs().Last() });
+            var amplifierD = new IntcodeComputer(input, new[] { phases[3], amplifierC.Output });
             amplifierD.Run();
 
-            var amplifierE = new IntcodeComputer(input, new[] { phases[4], amplifierD.GetOutputs().Last() });
+            var amplifierE = new IntcodeComputer(input, new[] { phases[4], amplifierD.Output });
             amplifierE.Run();
 
-            var output = amplifierE.GetOutputs().Last();
+            var output = amplifierE.Output;
 
             max = Math.Max(output, max);
         }
@@ -65,23 +65,23 @@ public static class Day07
             {
                 amplifierA.AddInput(output);
                 amplifierA.Run();
-                output = amplifierA.GetOutputs().Last();
+                output = amplifierA.Output;
 
                 amplifierB.AddInput(output);
                 amplifierB.Run();
-                output = amplifierB.GetOutputs().Last();
+                output = amplifierB.Output;
 
                 amplifierC.AddInput(output);
                 amplifierC.Run();
-                output = amplifierC.GetOutputs().Last();
+                output = amplifierC.Output;
 
                 amplifierD.AddInput(output);
                 amplifierD.Run();
-                output = amplifierD.GetOutputs().Last();
+                output = amplifierD.Output;
 
                 amplifierE.AddInput(output);
                 amplifierE.Run();
-                output = amplifierE.GetOutputs().Last();
+                output = amplifierE.Output;
             }
 
             max = Math.Max(output, max);

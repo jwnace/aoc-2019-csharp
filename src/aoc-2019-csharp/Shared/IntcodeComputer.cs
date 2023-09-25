@@ -23,7 +23,7 @@ public class IntcodeComputer
 
     public bool HasHalted { get; private set; }
 
-    public int[] GetOutputs() => _outputs.ToArray();
+    public int Output => _outputs.Last();
 
     public int Run(int? noun = null, int? verb = null)
     {
