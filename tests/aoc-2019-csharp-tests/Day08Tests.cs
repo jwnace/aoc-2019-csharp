@@ -7,7 +7,7 @@ public class Day08Tests
     [Test]
     public void Part1_ReturnsCorrectAnswer()
     {
-        var expected = 0;
+        var expected = 1677;
         var actual = Day08.Part1();
         actual.Should().Be(expected);
     }
@@ -15,7 +15,14 @@ public class Day08Tests
     [Test]
     public void Part2_ReturnsCorrectAnswer()
     {
-        var expected = 0;
+        var expected =
+            Environment.NewLine + "#  # ###  #  # #### ###  " +
+            Environment.NewLine + "#  # #  # #  # #    #  # " +
+            Environment.NewLine + "#  # ###  #  # ###  #  # " +
+            Environment.NewLine + "#  # #  # #  # #    ###  " +
+            Environment.NewLine + "#  # #  # #  # #    #    " +
+            Environment.NewLine + " ##  ###   ##  #    #    ";
+
         var actual = Day08.Part2();
         actual.Should().Be(expected);
     }
