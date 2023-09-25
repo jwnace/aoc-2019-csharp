@@ -5,7 +5,7 @@ public class IntcodeComputer
     private readonly int[] _memory;
     private int[] _inputs;
     private int[] _outputs;
-    private int _instructionPointer = 0;
+    private int _currentInstruction;
 
     public IntcodeComputer(int[] memory)
     {
@@ -30,9 +30,9 @@ public class IntcodeComputer
         _memory[1] = noun ?? _memory[1];
         _memory[2] = verb ?? _memory[2];
 
-        while (_instructionPointer < _memory.Length)
+        while (_currentInstruction < _memory.Length)
         {
-            var instruction = _memory[_instructionPointer].ToString().PadLeft(5, '0');
+            var instruction = _memory[_currentInstruction].ToString().PadLeft(5, '0');
             var opcode = int.Parse(instruction[^2..]);
 
             if (opcode == 99)
@@ -41,23 +41,23 @@ public class IntcodeComputer
                 break;
             }
 
-            var previousInstruction = _instructionPointer;
+            var previousInstruction = _currentInstruction;
 
-            _instructionPointer = opcode switch
+            _currentInstruction = opcode switch
             {
-                1 => ProcessAdditionInstruction(instruction, _instructionPointer),
-                2 => ProcessMultiplicationInstruction(instruction, _instructionPointer),
-                3 => ProcessInputInstruction(_instructionPointer),
-                4 => ProcessOutputInstruction(instruction, _instructionPointer),
-                5 => ProcessJumpIfTrueInstruction(instruction, _instructionPointer),
-                6 => ProcessJumpIfFalseInstruction(instruction, _instructionPointer),
-                7 => ProcessLessThanInstruction(instruction, _instructionPointer),
-                8 => ProcessEqualsInstruction(instruction, _instructionPointer),
-                _ => throw new Exception($"Invalid opcode {opcode} at position {_instructionPointer}")
+                1 => ProcessAdditionInstruction(instruction, _currentInstruction),
+                2 => ProcessMultiplicationInstruction(instruction, _currentInstruction),
+                3 => ProcessInputInstruction(_currentInstruction),
+                4 => ProcessOutputInstruction(instruction, _currentInstruction),
+                5 => ProcessJumpIfTrueInstruction(instruction, _currentInstruction),
+                6 => ProcessJumpIfFalseInstruction(instruction, _currentInstruction),
+                7 => ProcessLessThanInstruction(instruction, _currentInstruction),
+                8 => ProcessEqualsInstruction(instruction, _currentInstruction),
+                _ => throw new Exception($"Invalid opcode {opcode} at position {_currentInstruction}")
             };
 
             // if we didn't move the instruction pointer, we need to break out of the loop
-            if (_instructionPointer == previousInstruction)
+            if (_currentInstruction == previousInstruction)
             {
                 break;
             }
