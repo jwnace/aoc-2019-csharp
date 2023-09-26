@@ -6,22 +6,22 @@ namespace aoc_2019_csharp.Day07;
 
 public static class Day07
 {
-    private static readonly int[] Input = File.ReadAllText("Day07/day07.txt").Split(',').Select(int.Parse).ToArray();
+    private static readonly long[] Input = File.ReadAllText("Day07/day07.txt").Split(',').Select(long.Parse).ToArray();
 
-    public static int Part1() => GetMaxOutput(Input);
+    public static long Part1() => GetMaxOutput(Input);
 
-    public static int Part2() => FeedbackLoop(Input);
+    public static long Part2() => FeedbackLoop(Input);
 
-    public static int GetMaxOutput(int[] input)
+    public static long GetMaxOutput(long[] input)
     {
-        var max = 0;
+        var max = 0L;
         var phaseSettings = new[] { 0, 1, 2, 3, 4 };
 
         var permutations = phaseSettings.GetPermutations(5).Select(x => x.ToArray());
 
         foreach (var phases in permutations)
         {
-            var amplifierA = new IntcodeComputer(input, new[] { phases[0], 0 });
+            var amplifierA = new IntcodeComputer(input, new[] { phases[0], 0L });
             amplifierA.Run();
 
             var amplifierB = new IntcodeComputer(input, new[] { phases[1], amplifierA.Output });
@@ -44,16 +44,16 @@ public static class Day07
         return max;
     }
 
-    public static int FeedbackLoop(int[] input)
+    public static long FeedbackLoop(long[] input)
     {
-        var max = 0;
-        var phaseSettings = new[] { 5, 6, 7, 8, 9 };
+        var max = 0L;
+        var phaseSettings = new[] { 5L, 6L, 7L, 8L, 9L };
 
         var permutations = phaseSettings.GetPermutations(5).Select(x => x.ToArray());
 
         foreach (var phases in permutations)
         {
-            var output = 0;
+            var output = 0L;
 
             var amplifierA = new IntcodeComputer(input, new[] { phases[0] });
             var amplifierB = new IntcodeComputer(input, new[] { phases[1] });
