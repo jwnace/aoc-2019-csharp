@@ -83,6 +83,11 @@ public static class Day11
             robot.MoveForward();
         }
 
+        return DrawGrid(grid);
+    }
+
+    private static string DrawGrid(Dictionary<(int, int), Color> grid)
+    {
         var builder = new StringBuilder();
 
         var minX = grid.Keys.Min(x => x.Item1);
@@ -90,11 +95,11 @@ public static class Day11
         var minY = grid.Keys.Min(x => x.Item2);
         var maxY = grid.Keys.Max(x => x.Item2);
 
-        for(var row = maxY; row >= minY; row--)
+        for (var row = maxY; row >= minY; row--)
         {
             builder.Append(Environment.NewLine);
 
-            for(var col = minX; col <= maxX; col++)
+            for (var col = minX; col <= maxX; col++)
             {
                 var found = grid.TryGetValue((col, row), out var value);
 
@@ -112,25 +117,25 @@ public static class Day11
 
     private class Robot
     {
-        public Coordinate Position { get; set; } = new Coordinate { X = 0, Y = 0 };
+        public Coordinate Position { get; } = new() { X = 0, Y = 0 };
         public Direction Direction { get; set; } = Direction.North;
-        public IntcodeComputer Brain { get; set; } = new IntcodeComputer(Input, extraMemory: 10_000);
+        public IntcodeComputer Brain { get; } = new(Input, extraMemory: 1000);
 
         internal void MoveForward()
         {
-            switch (this.Direction)
+            switch (Direction)
             {
                 case Direction.North:
-                    this.Position.Y++;
+                    Position.Y++;
                     break;
                 case Direction.South:
-                    this.Position.Y--;
+                    Position.Y--;
                     break;
                 case Direction.East:
-                    this.Position.X++;
+                    Position.X++;
                     break;
                 case Direction.West:
-                    this.Position.X--;
+                    Position.X--;
                     break;
             }
         }
