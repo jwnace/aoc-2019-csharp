@@ -310,4 +310,10 @@ public class IntcodeComputer
 
     public void AddInput(long value) =>
         _inputs = _inputs.Append(value).ToArray();
+
+    public long[] GetOutputs() =>
+        _outputs.ToArray();
+
+    public void ClearOutput() =>
+        _outputs = Array.Empty<long>();
 }
