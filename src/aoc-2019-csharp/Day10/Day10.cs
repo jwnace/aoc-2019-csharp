@@ -7,13 +7,10 @@ public static class Day10
     public static int Part1()
     {
         var max = 0;
-        var maxRow = 0;
-        var maxCol = 0;
-        var maxAngles = new List<double>();
 
-        for (int row = 0; row < Input.Length; row++)
+        for (var row = 0; row < Input.Length; row++)
         {
-            for (int col = 0; col < Input[row].Length; col++)
+            for (var col = 0; col < Input[row].Length; col++)
             {
                 if (Input[row][col] != '#')
                 {
@@ -22,9 +19,9 @@ public static class Day10
 
                 var angles = new List<double>();
 
-                for (int r = 0; r < Input.Length; r++)
+                for (var r = 0; r < Input.Length; r++)
                 {
-                    for (int c = 0; c < Input[r].Length; c++)
+                    for (var c = 0; c < Input[r].Length; c++)
                     {
                         if ((r == row && c == col) || Input[r][c] != '#')
                         {
@@ -42,9 +39,6 @@ public static class Day10
                         if (count > max)
                         {
                             max = count;
-                            maxRow = row;
-                            maxCol = col;
-                            maxAngles = angles;
                         }
                     }
                 }
@@ -61,9 +55,9 @@ public static class Day10
         var maxCol = 0;
         var maxAngles = new Dictionary<double, List<(int, int)>>();
 
-        for (int row = 0; row < Input.Length; row++)
+        for (var row = 0; row < Input.Length; row++)
         {
-            for (int col = 0; col < Input[row].Length; col++)
+            for (var col = 0; col < Input[row].Length; col++)
             {
                 if (Input[row][col] != '#')
                 {
@@ -72,9 +66,9 @@ public static class Day10
 
                 var angles = new Dictionary<double, List<(int, int)>>();
 
-                for (int r = 0; r < Input.Length; r++)
+                for (var r = 0; r < Input.Length; r++)
                 {
-                    for (int c = 0; c < Input[r].Length; c++)
+                    for (var c = 0; c < Input[r].Length; c++)
                     {
                         if ((r == row && c == col) || Input[r][c] != '#')
                         {
@@ -83,12 +77,15 @@ public static class Day10
 
                         var rise = row - r;
                         var run = c - col;
-                        var angle = Math.Atan2(rise, run) * 180 /
-                                    Math.PI; // this is the actual angle from asteroid A to asteroid B
-                        angle -= 90;         // HACK: subtract 90 to rotate the entire field 90 degrees
-                        angle = angle <= 0
-                            ? angle + 360
-                            : angle; // HACK: get rid of negative angles so we can loop from 360 to 0
+
+                        // this is the actual angle from asteroid A to asteroid B
+                        var angle = Math.Atan2(rise, run) * 180 / Math.PI;
+
+                        // HACK: subtract 90 to rotate the entire field 90 degrees
+                        angle -= 90;
+
+                        // HACK: get rid of negative angles so we can loop from 360 to 0
+                        angle = angle <= 0 ? angle + 360 : angle;
 
                         if (angles.ContainsKey(angle))
                         {
@@ -96,10 +93,10 @@ public static class Day10
                         }
                         else
                         {
-                            angles.Add(angle, new List<(int, int)> { (r, c) });
+                            angles.Add(angle, new() { (r, c) });
                         }
 
-                        var count = angles.Count();
+                        var count = angles.Count;
 
                         if (count > max)
                         {
@@ -125,11 +122,9 @@ public static class Day10
                     continue;
                 }
 
-                var temp = a.Value.OrderBy(x => Math.Abs(x.Item1 - maxRow) + Math.Abs(x.Item2 - maxCol)).First();
+                var temp = a.Value.MinBy(x => Math.Abs(x.Item1 - maxRow) + Math.Abs(x.Item2 - maxCol));
                 a.Value.Remove(temp);
                 counter++;
-
-                // Console.WriteLine($"Vaporized asteroid #{counter}: ({temp.Item2}, {temp.Item1})");
 
                 if (counter == 200)
                 {
