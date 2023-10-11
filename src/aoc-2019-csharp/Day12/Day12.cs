@@ -28,7 +28,7 @@ public static class Day12
         var moons = GetMoons(input);
         var seen = new HashSet<string>();
 
-        for (var t = 0; t < int.MaxValue; t++)
+        for (var t = 0L; t < long.MaxValue; t++)
         {
             var hashString = HashMoons(moons);
 
