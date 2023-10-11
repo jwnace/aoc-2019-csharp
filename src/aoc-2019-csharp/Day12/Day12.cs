@@ -1,4 +1,5 @@
-﻿using aoc_2019_csharp.Extensions;
+﻿using System.Diagnostics;
+using aoc_2019_csharp.Extensions;
 
 namespace aoc_2019_csharp.Day12;
 
@@ -8,7 +9,7 @@ public static class Day12
 
     public static int Part1() => Solve1(Input, 1000);
 
-    public static int Part2() => Solve2(Input);
+    public static long Part2() => Solve2(Input);
 
     public static int Solve1(string[] input, int steps)
     {
@@ -22,9 +23,34 @@ public static class Day12
         return moons.Sum(x => x.GetTotalEnergy());
     }
 
-    public static int Solve2(string[] input)
+    public static long Solve2(string[] input)
     {
-        throw new NotImplementedException();
+        var moons = GetMoons(input);
+        var seen = new HashSet<string>();
+
+        for (var t = 0; t < int.MaxValue; t++)
+        {
+            var hashString = HashMoons(moons);
+
+            if (seen.Contains(hashString))
+            {
+                return t;
+            }
+
+            seen.Add(hashString);
+
+            SimulateMovement(moons);
+        }
+
+        throw new Exception("No solution found");
+    }
+
+    private static string HashMoons(List<Moon> moons)
+    {
+        var hash = moons.Select(m => (m.Position.X, m.Position.Y, m.Position.Z, m.Velocity.X, m.Velocity.Y, m.Velocity.Z))
+            .ToList();
+        var hashString = string.Join(",", hash);
+        return hashString;
     }
 
     private static List<Moon> GetMoons(string[] input)
