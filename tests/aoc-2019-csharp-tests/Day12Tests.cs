@@ -26,7 +26,7 @@ public class Day12Tests
     [Test]
     public void Part1_ReturnsCorrectAnswer()
     {
-        Day12.Part1().Should().Be(0);
+        Day12.Part1().Should().Be(12053);
     }
 
     [Test]
