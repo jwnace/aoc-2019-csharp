@@ -1,6 +1,4 @@
-﻿using aoc_2019_csharp.Common;
-
-Console.ForegroundColor = ConsoleColor.Green;
+﻿Console.ForegroundColor = ConsoleColor.Green;
 
 await Runner.RunPart(01, 1, Day01.Part1);
 await Runner.RunPart(01, 2, Day01.Part2);
