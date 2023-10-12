@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using aoc_2019_csharp.Extensions;
+﻿using aoc_2019_csharp.Extensions;
+using aoc_2019_csharp.Shared;
 
 namespace aoc_2019_csharp.Day12;
 
@@ -26,31 +26,73 @@ public static class Day12
     public static long Solve2(string[] input)
     {
         var moons = GetMoons(input);
-        var seen = new HashSet<string>();
 
-        for (var t = 0L; t < long.MaxValue; t++)
+        var xHashes = new HashSet<(int, int, int, int, int, int, int, int)> { HashX(moons) };
+        var yHashes = new HashSet<(int, int, int, int, int, int, int, int)> { HashY(moons) };
+        var zHashes = new HashSet<(int, int, int, int, int, int, int, int)> { HashZ(moons) };
+
+        var xFound = false;
+        var yFound = false;
+        var zFound = false;
+
+        var xCycle = 0L;
+        var yCycle = 0L;
+        var zCycle = 0L;
+
+        var t = 0L;
+
+        while (!xFound || !yFound || !zFound)
         {
-            var hashString = HashMoons(moons);
+            SimulateMovement(moons);
+            t++;
 
-            if (seen.Contains(hashString))
+            if (!xFound)
             {
-                return t;
+                var xHash = HashX(moons);
+
+                if (xHashes.Contains(xHash))
+                {
+                    xFound = true;
+                    xCycle = t;
+                }
+                else
+                {
+                    xHashes.Add(xHash);
+                }
             }
 
-            seen.Add(hashString);
+            if (!yFound)
+            {
+                var yHash = HashY(moons);
 
-            SimulateMovement(moons);
+                if (yHashes.Contains(yHash))
+                {
+                    yFound = true;
+                    yCycle = t;
+                }
+                else
+                {
+                    yHashes.Add(yHash);
+                }
+            }
+
+            if (!zFound)
+            {
+                var zHash = HashZ(moons);
+
+                if (zHashes.Contains(zHash))
+                {
+                    zFound = true;
+                    zCycle = t;
+                }
+                else
+                {
+                    zHashes.Add(zHash);
+                }
+            }
         }
 
-        throw new Exception("No solution found");
-    }
-
-    private static string HashMoons(List<Moon> moons)
-    {
-        var hash = moons.Select(m => (m.Position.X, m.Position.Y, m.Position.Z, m.Velocity.X, m.Velocity.Y, m.Velocity.Z))
-            .ToList();
-        var hashString = string.Join(",", hash);
-        return hashString;
+        return MathHelper.LeastCommonMultiple(xCycle, yCycle, zCycle);
     }
 
     private static List<Moon> GetMoons(string[] input)
@@ -109,5 +151,26 @@ public static class Day12
         {
             moon.Position += moon.Velocity;
         }
+    }
+
+    private static (int, int, int, int, int, int, int, int) HashX(List<Moon> moons)
+    {
+        return (
+            moons[0].Position.X, moons[1].Position.X, moons[2].Position.X, moons[3].Position.X,
+            moons[0].Velocity.X, moons[1].Velocity.X, moons[2].Velocity.X, moons[3].Velocity.X);
+    }
+
+    private static (int, int, int, int, int, int, int, int) HashY(List<Moon> moons)
+    {
+        return (
+            moons[0].Position.Y, moons[1].Position.Y, moons[2].Position.Y, moons[3].Position.Y,
+            moons[0].Velocity.Y, moons[1].Velocity.Y, moons[2].Velocity.Y, moons[3].Velocity.Y);
+    }
+
+    private static (int, int, int, int, int, int, int, int) HashZ(List<Moon> moons)
+    {
+        return (
+            moons[0].Position.Z, moons[1].Position.Z, moons[2].Position.Z, moons[3].Position.Z,
+            moons[0].Velocity.Z, moons[1].Velocity.Z, moons[2].Velocity.Z, moons[3].Velocity.Z);
     }
 }

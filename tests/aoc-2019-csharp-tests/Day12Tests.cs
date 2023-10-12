@@ -51,6 +51,6 @@ public class Day12Tests
     [Test]
     public void Part2_ReturnsCorrectAnswer()
     {
-        Day12.Part2().Should().Be(0);
+        Day12.Part2().Should().Be(320380285873116);
     }
 }
