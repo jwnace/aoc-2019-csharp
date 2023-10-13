@@ -1,5 +1,4 @@
-﻿using System.Text;
-using aoc_2019_csharp.Shared;
+﻿using aoc_2019_csharp.Shared;
 
 namespace aoc_2019_csharp.Day15;
 
@@ -30,7 +29,6 @@ public static class Day15
                 (x + 1, y)
             };
 
-            // if we've visited all of our neighbors, backtrack
             if (neighbors.All(n => visited.ContainsKey(n)))
             {
                 if (path.Count == 0)
@@ -86,14 +84,12 @@ public static class Day15
 
             if (output == 0)
             {
-                // we hit a wall
                 visited[(firstUnvisitedNeighbor)] = int.MaxValue;
                 continue;
             }
 
             if (output == 1)
             {
-                // we moved
                 visited[(firstUnvisitedNeighbor)] = visited[(x, y)] + 1;
                 path.Push(direction);
                 (x, y) = (firstUnvisitedNeighbor);
@@ -102,20 +98,9 @@ public static class Day15
 
             if (output == 2)
             {
-                // Console.WriteLine($"Found the oxygen system at ({firstUnvisitedNeighbor})!");
-
-                // visited[(firstUnvisitedNeighbor)] = visited[(x, y)] + 1;
-                // path.Push(direction);
-                // (x, y) = (firstUnvisitedNeighbor);
-
-                // we found the oxygen system
                 return visited[(x, y)] + 1;
             }
         }
-
-        // Console.WriteLine($"Current Position: ({x}, {y})");
-        // var render = DrawMap(visited, (x, y));
-        // Console.WriteLine(render);
 
         return 0;
     }
@@ -124,7 +109,6 @@ public static class Day15
     {
         var map = BuildMap(input);
 
-        // var oxygenSystem = map.First(c => c.Value == 'O').Key;
         var oxygenSystem = (-12, -12, 0);
         var visited = new HashSet<(int X, int Y)>();
         var queue = new Queue<(int X, int Y, int Distance)>();
@@ -184,7 +168,6 @@ public static class Day15
                 (x + 1, y)
             };
 
-            // if we've visited all of our neighbors, backtrack
             if (neighbors.All(n => visited.ContainsKey(n)))
             {
                 if (path.Count == 0)
@@ -240,14 +223,12 @@ public static class Day15
 
             if (output == 0)
             {
-                // we hit a wall
                 visited[(firstUnvisitedNeighbor)] = int.MaxValue;
                 continue;
             }
 
             if (output == 1)
             {
-                // we moved
                 visited[(firstUnvisitedNeighbor)] = visited[(x, y)] + 1;
                 path.Push(direction);
                 (x, y) = (firstUnvisitedNeighbor);
@@ -256,48 +237,12 @@ public static class Day15
 
             if (output == 2)
             {
-                // Console.WriteLine($"Found the oxygen system at ({firstUnvisitedNeighbor})!");
-
                 visited[(firstUnvisitedNeighbor)] = visited[(x, y)] + 1;
                 path.Push(direction);
                 (x, y) = (firstUnvisitedNeighbor);
-
-                // we found the oxygen system
-                // return visited[(x, y)] + 1;
             }
         }
-
-        // Console.WriteLine($"Current Position: ({x}, {y})");
-        // var render = DrawMap(visited, (x, y));
-        // Console.WriteLine(render);
 
         return visited.ToDictionary(c => c.Key, c => c.Value == int.MaxValue ? '#' : '.');
-    }
-
-    private static string DrawMap(Dictionary<(int X, int Y), int> visited, (int X, int Y) currentPosition)
-    {
-        var (minX, maxX) = (visited.MinBy(kvp => kvp.Key.X).Key.X, visited.MaxBy(kvp => kvp.Key.X).Key.X);
-        var (minY, maxY) = (visited.MinBy(kvp => kvp.Key.Y).Key.Y, visited.MaxBy(kvp => kvp.Key.Y).Key.Y);
-
-        var sb = new StringBuilder();
-
-        for (var y = maxY; y >= minY; y--)
-        {
-            for (var x = minX; x <= maxX; x++)
-            {
-                if (visited.ContainsKey((x, y)))
-                {
-                    sb.Append(visited[(x, y)] == int.MaxValue ? '#' : (x, y) == currentPosition ? 'X' : '.');
-                }
-                else
-                {
-                    sb.Append(' ');
-                }
-            }
-
-            sb.AppendLine();
-        }
-
-        return sb.ToString();
     }
 }
