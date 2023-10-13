@@ -13,6 +13,6 @@ public class Day15Tests
     [Test]
     public void Part2_ReturnsCorrectAnswer()
     {
-        Day15.Part2().Should().Be(0);
+        Day15.Part2().Should().Be(278);
     }
 }
