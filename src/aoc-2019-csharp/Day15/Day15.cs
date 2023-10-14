@@ -21,15 +21,15 @@ public static class Day15
 
         while (true)
         {
-            var neighbors = new[]
+            var neighbors = new((int X, int Y) Position, int Direction)[]
             {
-                (x, y + 1),
-                (x, y - 1),
-                (x - 1, y),
-                (x + 1, y)
+                ((x, y + 1), 1),
+                ((x, y - 1), 2),
+                ((x - 1, y), 3),
+                ((x + 1, y), 4),
             };
 
-            if (neighbors.All(n => visited.ContainsKey(n)))
+            if (neighbors.All(n => visited.ContainsKey(n.Position)))
             {
                 if (path.Count == 0)
                 {
@@ -67,16 +67,9 @@ public static class Day15
                 continue;
             }
 
-            var firstUnvisitedNeighbor = neighbors.First(n => !visited.ContainsKey(n));
+            var firstUnvisitedNeighbor = neighbors.First(n => !visited.ContainsKey(n.Position));
 
-            var direction = firstUnvisitedNeighbor switch
-            {
-                (_, _) N when N == (x, y + 1) => 1,
-                (_, _) S when S == (x, y - 1) => 2,
-                (_, _) W when W == (x - 1, y) => 3,
-                (_, _) E when E == (x + 1, y) => 4,
-                _ => throw new Exception("Invalid direction")
-            };
+            var direction = firstUnvisitedNeighbor.Direction;
 
             computer.AddInput(direction);
             computer.Run();
@@ -84,15 +77,15 @@ public static class Day15
 
             if (output == 0)
             {
-                visited[(firstUnvisitedNeighbor)] = int.MaxValue;
+                visited[firstUnvisitedNeighbor.Position] = int.MaxValue;
                 continue;
             }
 
             if (output == 1)
             {
-                visited[(firstUnvisitedNeighbor)] = visited[(x, y)] + 1;
+                visited[firstUnvisitedNeighbor.Position] = visited[(x, y)] + 1;
                 path.Push(direction);
-                (x, y) = (firstUnvisitedNeighbor);
+                (x, y) = firstUnvisitedNeighbor.Position;
                 continue;
             }
 
@@ -223,23 +216,23 @@ public static class Day15
 
             if (output == 0)
             {
-                visited[(firstUnvisitedNeighbor)] = int.MaxValue;
+                visited[firstUnvisitedNeighbor] = int.MaxValue;
                 continue;
             }
 
             if (output == 1)
             {
-                visited[(firstUnvisitedNeighbor)] = visited[(x, y)] + 1;
+                visited[firstUnvisitedNeighbor] = visited[(x, y)] + 1;
                 path.Push(direction);
-                (x, y) = (firstUnvisitedNeighbor);
+                (x, y) = firstUnvisitedNeighbor;
                 continue;
             }
 
             if (output == 2)
             {
-                visited[(firstUnvisitedNeighbor)] = visited[(x, y)] + 1;
+                visited[firstUnvisitedNeighbor] = visited[(x, y)] + 1;
                 path.Push(direction);
-                (x, y) = (firstUnvisitedNeighbor);
+                (x, y) = firstUnvisitedNeighbor;
             }
         }
 
