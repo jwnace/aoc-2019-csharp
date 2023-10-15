@@ -7,16 +7,12 @@ public class Day17Tests
     [Test]
     public void Part1_ReturnsCorrectAnswer()
     {
-        var expected = 0;
-        var actual = Day17.Part1();
-        actual.Should().Be(expected);
+        Day17.Part1().Should().Be(9876);
     }
 
     [Test]
     public void Part2_ReturnsCorrectAnswer()
     {
-        var expected = 0;
-        var actual = Day17.Part2();
-        actual.Should().Be(expected);
+        Day17.Part2().Should().Be(1234055);
     }
 }
