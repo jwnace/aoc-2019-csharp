@@ -4,10 +4,10 @@ namespace aoc_2019_csharp_tests;
 
 public class Day16Tests
 {
-    [TestCase("80871224585914546619083218645595", 24176176)]
-    [TestCase("19617804207202209144916044189917", 73745418)]
-    [TestCase("69317163492948606335995924319873", 52432133)]
-    public void Part1_Example_ReturnsCorrectAnswer(string input, int expected)
+    [TestCase("80871224585914546619083218645595", "24176176")]
+    [TestCase("19617804207202209144916044189917", "73745418")]
+    [TestCase("69317163492948606335995924319873", "52432133")]
+    public void Part1_Example_ReturnsCorrectAnswer(string input, string expected)
     {
         Day16.Solve1(input).Should().Be(expected);
     }
@@ -15,7 +15,7 @@ public class Day16Tests
     [Test]
     public void Part1_ReturnsCorrectAnswer()
     {
-        Day16.Part1().Should().Be(0);
+        Day16.Part1().Should().Be("42945143");
     }
 
     [TestCase("80871224585914546619083218645595", 0)]
