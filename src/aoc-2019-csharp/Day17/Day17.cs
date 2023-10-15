@@ -8,7 +8,7 @@ public static class Day17
 
     public static int Part1() => Solve1(Input);
 
-    public static int Part2() => Solve2(Input);
+    public static long Part2() => Solve2(Input);
 
     private static int Solve1(string input)
     {
@@ -24,9 +24,30 @@ public static class Day17
         return intersections.Sum(x => x.Row * x.Col);
     }
 
-    private static int Solve2(string input)
+    private static long Solve2(string input)
     {
-        throw new NotImplementedException();
+        var memory = input.Split(',').Select(long.Parse).ToArray();
+        memory[0] = 2;
+
+        var computer = new IntcodeComputer(memory, 10_000);
+        var mainMovementRoutine = "A,B,A,C,B,C,B,A,C,B\n".ToArray();
+        var movementFunctionA = "L,10,L,6,R,10\n".ToArray();
+        var movementFunctionB = "R,6,R,8,R,8,L,6,R,8\n".ToArray();
+        var movementFunctionC = "L,10,R,8,R,8,L,10\n".ToArray();
+        var videoFeed = "n\n".ToArray();
+
+        var inputs = mainMovementRoutine
+            .Concat(movementFunctionA)
+            .Concat(movementFunctionB)
+            .Concat(movementFunctionC)
+            .Concat(videoFeed)
+            .Select(c => (long)c)
+            .ToArray();
+
+        computer.AddInputs(inputs);
+        computer.Run();
+
+        return computer.Output;
     }
 
     private static Dictionary<(int Row, int Col), char> BuildGrid(IEnumerable<long> outputs)

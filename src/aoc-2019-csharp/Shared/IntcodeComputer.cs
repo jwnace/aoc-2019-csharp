@@ -311,6 +311,9 @@ public class IntcodeComputer
     public void AddInput(long value) =>
         _inputs = _inputs.Append(value).ToArray();
 
+    public void AddInputs(long[] inputs) =>
+        _inputs = _inputs.Concat(inputs).ToArray();
+
     public long[] GetOutputs() =>
         _outputs.ToArray();
 
