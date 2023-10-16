@@ -58,7 +58,48 @@ public class Day18Tests
         Day18.Part1().Should().Be(5198);
     }
 
-    [TestCase(new[] { "" }, 0)]
+    [TestCase(new[]
+    {
+        "#######",
+        "#a.#Cd#",
+        "##@#@##",
+        "#######",
+        "##@#@##",
+        "#cB#Ab#",
+        "#######",
+    }, 8, TestName = "04 Keys (simple)")]
+    [TestCase(new[]
+    {
+        "###############",
+        "#d.ABC.#.....a#",
+        "######@#@######",
+        "###############",
+        "######@#@######",
+        "#b.....#.....c#",
+        "###############",
+    }, 24, TestName = "04 Keys (complex)")]
+    [TestCase(new[]
+    {
+        "#############",
+        "#DcBa.#.GhKl#",
+        "#.###@#@#I###",
+        "#e#d#####j#k#",
+        "###C#@#@###J#",
+        "#fEbA.#.FgHi#",
+        "#############",
+    }, 32, TestName = "12 Keys")]
+    [TestCase(new[]
+    {
+        "#############",
+        "#g#f.D#..h#l#",
+        "#F###e#E###.#",
+        "#dCba@#@BcIJ#",
+        "#############",
+        "#nK.L@#@G...#",
+        "#M###N#H###.#",
+        "#o#m..#i#jk.#",
+        "#############",
+    }, 72, TestName = "15 Keys")]
     public void Part2_Example_ReturnsCorrectAnswer(string[] input, int expected)
     {
         Day18.Solve2(input).Should().Be(expected);

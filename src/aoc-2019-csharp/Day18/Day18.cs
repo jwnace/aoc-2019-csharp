@@ -2,11 +2,12 @@
 
 public static class Day18
 {
-    private static readonly string[] Input = File.ReadAllLines("Day18/day18.txt");
+    private static readonly string[] Part1Input = File.ReadAllLines("Day18/day18-part1.txt");
+    private static readonly string[] Part2Input = File.ReadAllLines("Day18/day18-part2.txt");
 
-    public static int Part1() => Solve1(Input);
+    public static int Part1() => Solve1(Part1Input);
 
-    public static int Part2() => Solve2(Input);
+    public static int Part2() => Solve2(Part2Input);
 
     public static int Solve1(string[] input)
     {
