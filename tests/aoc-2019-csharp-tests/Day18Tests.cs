@@ -9,7 +9,7 @@ public class Day18Tests
         "#########",
         "#b.A.@.a#",
         "#########",
-    }, 8)]
+    }, 8, TestName = "02 Keys")]
     [TestCase(new[]
     {
         "########################",
@@ -17,7 +17,7 @@ public class Day18Tests
         "######################.#",
         "#d.....................#",
         "########################",
-    }, 86)]
+    }, 86, TestName = "06 Keys")]
     [TestCase(new[]
     {
         "########################",
@@ -25,7 +25,7 @@ public class Day18Tests
         "#.######################",
         "#.....@.a.B.c.d.A.e.F.g#",
         "########################",
-    }, 132)]
+    }, 132, TestName = "07 Keys")]
     [TestCase(new[]
     {
         "#################",
@@ -37,7 +37,7 @@ public class Day18Tests
         "########.########",
         "#l.F..d...h..C.m#",
         "#################",
-    }, 136)]
+    }, 136, TestName = "16 Keys")]
     [TestCase(new[]
     {
         "########################",
@@ -46,7 +46,7 @@ public class Day18Tests
         "###A#B#C################",
         "###g#h#i################",
         "########################",
-    }, 81)]
+    }, 81, TestName = "09 Keys")]
     public void Part1_Example_ReturnsCorrectAnswer(string[] input, int expected)
     {
         Day18.Solve1(input).Should().Be(expected);
