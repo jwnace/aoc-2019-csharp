@@ -41,11 +41,11 @@ public static class Day19
         var row = 0;
         var col = 0;
 
-        for (row = 0; row < 1000; row++)
+        for (row = 400; row < 1000; row++)
         {
             var rowCount = 0;
 
-            for (col = 0; col < 2000; col++)
+            for (col = 400; col < 1500; col++)
             {
                 // TODO: why do I need to create a new computer for each coordinate?
                 var computer = new IntcodeComputer(memory, 100);
@@ -54,16 +54,6 @@ public static class Day19
 
                 var output = computer.Output;
 
-                // if (rowCount >= 100)
-                // {
-                //    Console.Write(output == 0 ? '.' : '#');
-                // }
-
-                if (output == 0)
-                {
-                    grid[(row, col)] = '.';
-                }
-
                 if (output == 1)
                 {
                     grid[(row, col)] = '#';
@@ -71,24 +61,14 @@ public static class Day19
                 }
             }
 
-            // if (rowCount >= 100)
-            // {
-            //    Console.WriteLine();
-            // }
-
             if (rowCount < 100)
             {
                 continue;
             }
 
-            // Console.WriteLine($"RowCount: {rowCount}");
-
             var row1 = row - 99;
             var row2 = row;
-
-            var rowValues = grid.Where(x => x.Key.Row == row2).Select(x => x).ToArray();
-
-            var col1 = rowValues.First(x => x.Value == '#').Key.Col;
+            var col1 = grid.Where(x => x.Key.Row == row2).Min(x => x.Key.Col);
             var col2 = col1 + 99;
 
             var topLeft = (row1, col1);
@@ -96,34 +76,20 @@ public static class Day19
             var bottomLeft = (row2, col1);
             var bottomRight = (row2, col2);
 
-            // Console.WriteLine($"Top Left: {topLeft}, Top Right: {topRight}, Bottom Left: {bottomLeft}, Bottom Right: {bottomRight}");
+            var topLeftValue = grid.TryGetValue(topLeft, out _);
+            var topRightValue = grid.TryGetValue(topRight, out _);
+            var bottomLeftValue = grid.TryGetValue(bottomLeft, out _);
+            var bottomRightValue = grid.TryGetValue(bottomRight, out _);
 
-            var topLeftValue = grid[topLeft];
-            var topRightValue = grid[topRight];
-            var bottomLeftValue = grid[bottomLeft];
-            var bottomRightValue = grid[bottomRight];
-
-            if (topLeftValue == '#' &&
-                topRightValue == '#' &&
-                bottomLeftValue == '#' &&
-                bottomRightValue == '#')
+            if (topLeftValue &&
+                topRightValue &&
+                bottomLeftValue &&
+                bottomRightValue)
             {
-                // Console.WriteLine($"Top Left: {topLeft}, Top Right: {topRight}, Bottom Left: {bottomLeft}, Bottom Right: {bottomRight}");
-
-                for (var r = row1 - 10 ; r <= row2; r++)
-                {
-                    for (var c = col1 - 10; c <= col2; c++)
-                    {
-                        // Console.Write(grid[(r, c)]);
-                    }
-
-                    // Console.WriteLine();
-                }
-
-                return (col1 * 10_000) + row1;
+                return col1 * 10_000 + row1;
             }
         }
 
-        return -1;
+        throw new Exception("No solution found");
     }
 }
