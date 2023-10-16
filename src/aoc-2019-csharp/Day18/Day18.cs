@@ -11,27 +11,25 @@ public static class Day18
     public static int Solve1(string[] input)
     {
         var grid = BuildGrid(input);
-        var entranceLocation = grid.First(x => x.Value == '@').Key;
-        var keyLocations = grid.Where(x => char.IsLower(x.Value)).ToDictionary(x => x.Key, x => x.Value);
-        var doorLocations = grid.Where(x => char.IsUpper(x.Value)).ToDictionary(x => x.Key, x => x.Value);
-        var initialState = new State(entranceLocation.Row, entranceLocation.Col, 0b00000000000000000000000000);
-        var allKeys = (1 << keyLocations.Count) - 1;
-
-        var queue = new Queue<State>();
-        queue.Enqueue(initialState);
-
+        var start = grid.First(x => x.Value == '@').Key;
+        var keyCount = grid.Count(x => char.IsLower(x.Value));
+        var allKeys = (1 << keyCount) - 1;
+        var initialState = new State(start.Row, start.Col, 0b00000000000000000000000000);
         var visited = new Dictionary<State, int>();
+        var queue = new Queue<State>();
+
+        queue.Enqueue(initialState);
         visited[initialState] = 0;
 
         while (queue.Any())
         {
             var state = queue.Dequeue();
             var (row, col, keys) = state;
-            var distance = visited[state];
 
             // if there is a key at my location, pick it up
-            if (keyLocations.TryGetValue((row, col), out var key))
+            if (char.IsLower(grid[(row, col)]))
             {
+                var key = grid[(row, col)];
                 keys |= 1 << key - 'a';
             }
 
@@ -51,12 +49,13 @@ public static class Day18
 
             foreach (var neighbor in neighbors)
             {
+                // check if we would run into a wall
                 if (grid[neighbor] == '#')
                 {
                     continue;
                 }
 
-                // check we are at a door that we can open
+                // check if we would run into a door that we can't unlock
                 if (char.IsUpper(grid[neighbor]))
                 {
                     var door = grid[neighbor];
@@ -75,7 +74,7 @@ public static class Day18
                 }
 
                 queue.Enqueue(newState);
-                visited[newState] = distance + 1;
+                visited[newState] = visited[state] + 1;
             }
         }
 

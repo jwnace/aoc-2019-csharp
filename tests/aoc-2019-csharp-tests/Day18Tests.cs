@@ -55,7 +55,7 @@ public class Day18Tests
     [Test]
     public void Part1_ReturnsCorrectAnswer()
     {
-        Day18.Part1().Should().Be(0);
+        Day18.Part1().Should().Be(5198);
     }
 
     [TestCase(new[] { "" }, 0)]
