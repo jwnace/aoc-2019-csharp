@@ -78,17 +78,16 @@ public class Day18Tests
         "#b.....#.....c#",
         "###############",
     }, 24, TestName = "04 Keys (complex)")]
-    // TODO: my algorithm doesn't work for this case because the grid cannot be split into 4 quadrants cleanly
-    // [TestCase(new[]
-    // {
-    //     "#############",
-    //     "#DcBa.#.GhKl#",
-    //     "#.###@#@#I###",
-    //     "#e#d#####j#k#",
-    //     "###C#@#@###J#",
-    //     "#fEbA.#.FgHi#",
-    //     "#############",
-    // }, 32, TestName = "12 Keys")]
+    [TestCase(new[]
+    {
+        "#############",
+        "#DcBa.#.GhKl#",
+        "#.###@#@#I###",
+        "#e#d#####j#k#",
+        "###C#@#@###J#",
+        "#fEbA.#.FgHi#",
+        "#############",
+    }, 32, TestName = "12 Keys")]
     [TestCase(new[]
     {
         "#############",
