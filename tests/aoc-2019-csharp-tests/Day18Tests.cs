@@ -108,6 +108,6 @@ public class Day18Tests
     [Test]
     public void Part2_ReturnsCorrectAnswer()
     {
-        Day18.Part2().Should().Be(0);
+        Day18.Part2().Should().Be(1736);
     }
 }
