@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace aoc_2019_csharp.Day18;
+﻿namespace aoc_2019_csharp.Day18;
 
 public static class Day18
 {
@@ -13,14 +11,80 @@ public static class Day18
     public static int Solve1(string[] input)
     {
         var grid = BuildGrid(input);
+        var entranceLocation = grid.First(x => x.Value == '@').Key;
+        var keyLocations = grid.Where(x => char.IsLower(x.Value)).ToDictionary(x => x.Key, x => x.Value);
+        var doorLocations = grid.Where(x => char.IsUpper(x.Value)).ToDictionary(x => x.Key, x => x.Value);
+        var initialState = new State(entranceLocation.Row, entranceLocation.Col, 0b00000000000000000000000000);
+        var allKeys = (1 << keyLocations.Count) - 1;
 
-        var entrance = grid.First(x => x.Value == '@').Key;
-        var keys = grid.Where(x => char.IsLower(x.Value)).ToDictionary(x => x.Key, x => x.Value);
-        var doors = grid.Where(x => char.IsUpper(x.Value)).ToDictionary(x => x.Key, x => x.Value);
+        var queue = new Queue<State>();
+        queue.Enqueue(initialState);
 
-        Console.WriteLine(DrawGrid(grid));
+        var visited = new Dictionary<State, int>();
+        visited[initialState] = 0;
 
-        return -1;
+        while (queue.Any())
+        {
+            var state = queue.Dequeue();
+            var (row, col, keys) = state;
+            var distance = visited[state];
+
+            // if there is a key at my location, pick it up
+            if (keyLocations.TryGetValue((row, col), out var key))
+            {
+                keys |= 1 << key - 'a';
+            }
+
+            // if we have all the keys, we're done
+            if (keys == allKeys)
+            {
+                return visited[state];
+            }
+
+            var neighbors = new (int Row, int Col)[]
+            {
+                (row - 1, col),
+                (row + 1, col),
+                (row, col - 1),
+                (row, col + 1),
+            };
+
+            foreach (var neighbor in neighbors)
+            {
+                if (grid[neighbor] == '#')
+                {
+                    continue;
+                }
+
+                // check we are at a door that we can open
+                if (char.IsUpper(grid[neighbor]))
+                {
+                    var door = grid[neighbor];
+
+                    if ((keys & 1 << door - 'A') == 0)
+                    {
+                        continue;
+                    }
+                }
+
+                var newState = new State(neighbor.Row, neighbor.Col, keys);
+
+                if (visited.ContainsKey(newState))
+                {
+                    continue;
+                }
+
+                queue.Enqueue(newState);
+                visited[newState] = distance + 1;
+            }
+        }
+
+        throw new Exception("No solution found");
+    }
+
+    public static int Solve2(string[] input)
+    {
+        throw new NotImplementedException();
     }
 
     private static Dictionary<(int Row, int Col), char> BuildGrid(string[] input)
@@ -38,27 +102,5 @@ public static class Day18
         return grid;
     }
 
-    private static string DrawGrid(Dictionary<(int Row, int Col),char> grid)
-    {
-        var sb = new StringBuilder();
-        var rows = grid.Keys.Select(k => k.Row).Distinct().OrderBy(r => r).ToList();
-        var cols = grid.Keys.Select(k => k.Col).Distinct().OrderBy(c => c).ToList();
-
-        foreach (var row in rows)
-        {
-            foreach (var col in cols)
-            {
-                sb.Append(grid[(row, col)]);
-            }
-
-            sb.AppendLine();
-        }
-
-        return sb.ToString();
-    }
-
-    public static int Solve2(string[] input)
-    {
-        throw new NotImplementedException();
-    }
+    private record State(int Row, int Col, int Keys);
 }
