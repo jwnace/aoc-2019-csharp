@@ -14,7 +14,7 @@ public static class Day18
         var start = grid.First(x => x.Value == '@').Key;
         var keyCount = grid.Count(x => char.IsLower(x.Value));
         var allKeys = (1 << keyCount) - 1;
-        var initialState = new State(start.Row, start.Col, 0b00000000000000000000000000);
+        var initialState = new State(start.Row, start.Col, 0);
         var visited = new Dictionary<State, int>();
         var queue = new Queue<State>();
 
