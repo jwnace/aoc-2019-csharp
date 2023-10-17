@@ -69,9 +69,92 @@ public static class Day20
         throw new Exception("No path found");
     }
 
-    private static int Solve2(string[] input)
+    public static int Solve2(string[] input)
     {
-        throw new NotImplementedException();
+        var grid = BuildGrid(input);
+        var start = GetPositionOfLabel("AA", grid);
+        var end = GetPositionOfLabel("ZZ", grid);
+        var queue = new Queue<(int Row, int Col, int Level, int Steps)>();
+        var seen = new HashSet<(int Row, int Col, int Level)>();
+        queue.Enqueue((start.Row, start.Col, 0, 0));
+
+        while (queue.Any())
+        {
+            var state = queue.Dequeue();
+            var (row, col, level, steps) = state;
+            var position = (row, col);
+
+            if (seen.Contains((row, col, level)))
+            {
+                continue;
+            }
+
+            seen.Add((row, col, level));
+
+            if (position == end && level == 0)
+            {
+                return steps;
+            }
+
+            var neighbors = GetNeighbors(row, col);
+
+            foreach (var neighbor in neighbors)
+            {
+                var value = grid.GetValueOrDefault(neighbor);
+
+                if (value == '.')
+                {
+                    queue.Enqueue((neighbor.Row, neighbor.Col, level, steps + 1));
+                    continue;
+                }
+
+                if (!char.IsUpper(value))
+                {
+                    continue;
+                }
+
+                var label = GetLabelAtPosition(neighbor, grid);
+
+                if (label is "AA" or "ZZ")
+                {
+                    continue;
+                }
+
+                var isOuterLabel = IsOuterLabel(position, grid);
+
+                if (isOuterLabel && level == 0)
+                {
+                    continue;
+                }
+
+                var matchingLabel = GetPositionOfMatchingLabel(label, position, grid);
+
+                var newState = isOuterLabel
+                    ? (matchingLabel.Row, matchingLabel.Col, level - 1, steps + 1)
+                    : (matchingLabel.Row, matchingLabel.Col, level + 1, steps + 1);
+
+                queue.Enqueue(newState);
+            }
+        }
+
+        throw new Exception("No path found");
+    }
+
+    private static bool IsOuterLabel((int row, int col) position, Dictionary<(int Row, int Col),char> grid)
+    {
+        var (row, col) = position;
+
+        if (row == 2 || row == grid.Keys.Max(x => x.Row) - 2)
+        {
+            return true;
+        }
+
+        if (col == 2 || col == grid.Keys.Max(x => x.Col) - 2)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private static (int Row, int Col)[] GetNeighbors(int row, int col) => new (int Row, int Col)[]
