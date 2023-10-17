@@ -7,7 +7,7 @@ public class Day21Tests
     [Test]
     public void Part1_ReturnsCorrectAnswer()
     {
-        Day21.Part1().Should().Be(0);
+        Day21.Part1().Should().Be(19350375);
     }
 
     [Test]
