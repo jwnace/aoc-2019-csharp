@@ -9,7 +9,7 @@ public static class Day21
 
     public static long Part1() => Solve1(Input);
 
-    public static int Part2() => Solve2(Input);
+    public static long Part2() => Solve2(Input);
 
     private static long Solve1(string input)
     {
@@ -46,8 +46,42 @@ public static class Day21
         return computer.Output;
     }
 
-    private static int Solve2(string input)
+    private static long Solve2(string input)
     {
-        throw new NotImplementedException();
+        var memory = input.Split(',').Select(long.Parse).ToArray();
+        var computer = new IntcodeComputer(memory, 100);
+        computer.Run();
+
+        var outputs = computer.GetOutputs();
+        computer.ClearOutput();
+
+        Console.WriteLine(string.Join("",outputs.Select(Convert.ToChar)));
+
+        var instructions = new[]
+        {
+            // if D is ground and there's a hole at B or C, we can jump to D
+            "NOT B J\n",
+            "NOT C T\n",
+            "OR T J\n",
+            "AND D J\n",
+
+            // but only if H is also ground
+            "AND H J\n",
+
+            // if next tile is a hole we have to jump
+            "NOT A T\n",
+            "OR T J\n",
+            "RUN\n",
+        };
+
+        var program = instructions.SelectMany(c => c).Select(c => (long)c).ToArray();
+        computer.AddInputs(program);
+        computer.Run();
+
+        outputs = computer.GetOutputs();
+
+        Console.WriteLine(string.Join("",outputs[..^1].Select(Convert.ToChar)));
+
+        return computer.Output;
     }
 }
