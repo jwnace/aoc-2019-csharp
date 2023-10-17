@@ -10,22 +10,22 @@ public static class Day22
 
     private static int Solve1(string[] input)
     {
-        var deck = Enumerable.Range(0, 10007);
+        var deck = Enumerable.Range(0, 10007).ToArray();
 
         foreach (var line in input)
         {
-            if (line.StartsWith("deal with increment "))
+            if (line.StartsWith("deal with increment"))
             {
-                var increment = int.Parse(line.Substring(20));
+                var increment = int.Parse(line[20..]);
                 deck = DealWithIncrement(deck, increment);
             }
             else if (line == "deal into new stack")
             {
                 deck = DealIntoNewStack(deck);
             }
-            else if (line.StartsWith("cut "))
+            else if (line.StartsWith("cut"))
             {
-                var cut = int.Parse(line.Substring("cut ".Length));
+                var cut = int.Parse(line[4..]);
                 deck = Cut(deck, cut);
             }
             else
@@ -34,8 +34,7 @@ public static class Day22
             }
         }
 
-        var array = deck as int[] ?? deck.ToArray();
-        return array.ToList().IndexOf(2019);
+        return Array.IndexOf(deck, 2019);
     }
 
     private static int Solve2(string[] input)
@@ -43,42 +42,27 @@ public static class Day22
         throw new NotImplementedException();
     }
 
-    private static IEnumerable<int> Cut(IEnumerable<int> deck, int cut)
+    private static int[] DealIntoNewStack(int[] deck)
     {
-        var cards = deck as int[] ?? deck.ToArray();
-        var result = new int[cards.Length];
-
-        cut %= cards.Length;
-
-        if (cut > 0)
-        {
-            Array.Copy(cards, cut, result, 0, cards.Length - cut);
-            Array.Copy(cards, 0, result, cards.Length - cut, cut);
-        }
-        else
-        {
-            Array.Copy(cards, cards.Length + cut, result, 0, -cut);
-            Array.Copy(cards, 0, result, -cut, cards.Length + cut);
-        }
-
-        return result;
+        return deck.Reverse().ToArray();
     }
 
-    private static IEnumerable<int> DealIntoNewStack(IEnumerable<int> deck)
+    private static int[] Cut(int[] deck, int cut)
     {
-        return deck.Reverse();
+        cut += cut < 0 ? deck.Length : 0;
+        cut %= deck.Length;
+
+        return deck[cut..].Concat(deck[..cut]).ToArray();
     }
 
-    private static IEnumerable<int> DealWithIncrement(IEnumerable<int> deck, int increment)
+    private static int[] DealWithIncrement(int[] deck, int increment)
     {
-        var cards = deck as int[] ?? deck.ToArray();
-        var result = new int[cards.Length];
-        var index = 0;
+        var result = new int[deck.Length];
 
-        foreach (var card in cards)
+        for (var i = 0; i < deck.Length; i++)
         {
-            result[index] = card;
-            index = (index + increment) % cards.Length;
+            var index = i * increment % deck.Length;
+            result[index] = deck[i];
         }
 
         return result;
