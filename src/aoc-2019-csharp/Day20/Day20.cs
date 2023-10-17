@@ -120,16 +120,14 @@ public static class Day20
                     continue;
                 }
 
-                var isOuterLabel = IsOuterLabel(position, grid);
-
-                if (isOuterLabel && level == 0)
+                if (IsOuterLabel(position, grid) && level == 0)
                 {
                     continue;
                 }
 
                 var matchingLabel = GetPositionOfMatchingLabel(label, position, grid);
 
-                var newState = isOuterLabel
+                var newState = IsOuterLabel(position, grid)
                     ? (matchingLabel.Row, matchingLabel.Col, level - 1, steps + 1)
                     : (matchingLabel.Row, matchingLabel.Col, level + 1, steps + 1);
 
@@ -144,17 +142,8 @@ public static class Day20
     {
         var (row, col) = position;
 
-        if (row == 2 || row == grid.Keys.Max(x => x.Row) - 2)
-        {
-            return true;
-        }
-
-        if (col == 2 || col == grid.Keys.Max(x => x.Col) - 2)
-        {
-            return true;
-        }
-
-        return false;
+        return row == 2 || row == grid.Keys.Max(x => x.Row) - 2 ||
+               col == 2 || col == grid.Keys.Max(x => x.Col) - 2;
     }
 
     private static (int Row, int Col)[] GetNeighbors(int row, int col) => new (int Row, int Col)[]
