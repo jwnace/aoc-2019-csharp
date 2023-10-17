@@ -13,10 +13,8 @@ public static class Day20
     public static int Solve1(string[] input)
     {
         var grid = BuildGrid(input);
-
-        var start = FindLabel("AA", grid);
-        var end = FindLabel("ZZ", grid);
-
+        var start = GetPositionOfLabel("AA", grid);
+        var end = GetPositionOfLabel("ZZ", grid);
         var queue = new Queue<(int Row, int Col, int Steps)>();
         var seen = new HashSet<(int Row, int Col)>();
         queue.Enqueue((start.Row, start.Col, 0));
@@ -25,30 +23,25 @@ public static class Day20
         {
             var state = queue.Dequeue();
             var (row, col, steps) = state;
+            var position = (row, col);
 
-            if (seen.Contains((row, col)))
+            if (seen.Contains(position))
             {
                 continue;
             }
 
-            seen.Add((row, col));
+            seen.Add(position);
 
-            if (row == end.Row && col == end.Col)
+            if (position == end)
             {
                 return steps;
             }
 
-            var neighbors = new (int Row, int Col)[]
-            {
-                (row - 1, col),
-                (row + 1, col),
-                (row, col - 1),
-                (row, col + 1),
-            };
+            var neighbors = GetNeighbors(row, col);
 
             foreach (var neighbor in neighbors)
             {
-                var value = grid.TryGetValue(neighbor, out var v) ? v : ' ';
+                var value = grid.GetValueOrDefault(neighbor);
 
                 if (value == '.')
                 {
@@ -56,19 +49,20 @@ public static class Day20
                     continue;
                 }
 
-                if (char.IsUpper(value))
+                if (!char.IsUpper(value))
                 {
-                    var label = GetLabel(neighbor, grid);
-
-                    if (label is "AA" or "ZZ")
-                    {
-                        continue;
-                    }
-
-                    var matchingLabel = FindMatchingLabel(label, grid, (row, col));
-                    queue.Enqueue((matchingLabel.Row, matchingLabel.Col, steps + 1));
                     continue;
                 }
+
+                var label = GetLabelAtPosition(neighbor, grid);
+
+                if (label is "AA" or "ZZ")
+                {
+                    continue;
+                }
+
+                var matchingLabel = GetPositionOfMatchingLabel(label, position, grid);
+                queue.Enqueue((matchingLabel.Row, matchingLabel.Col, steps + 1));
             }
         }
 
@@ -79,6 +73,14 @@ public static class Day20
     {
         throw new NotImplementedException();
     }
+
+    private static (int Row, int Col)[] GetNeighbors(int row, int col) => new (int Row, int Col)[]
+    {
+        (row - 1, col),
+        (row + 1, col),
+        (row, col - 1),
+        (row, col + 1),
+    };
 
     private static Dictionary<(int Row, int Col), char> BuildGrid(string[] input)
     {
@@ -95,50 +97,32 @@ public static class Day20
         return grid;
     }
 
-    private static (int Row, int Col) FindLabel(string label, Dictionary<(int Row, int Col), char> grid)
-    {
-        return grid.Where(x => x.Value == '.')
+    private static (int Row, int Col) GetPositionOfLabel(string label, Dictionary<(int Row, int Col), char> grid) =>
+        GetPositionsForLabel(label, grid).Single();
+
+    private static (int Row, int Col)[] GetPositionsForLabel(string label, Dictionary<(int Row, int Col), char> grid) =>
+        grid.Where(x => x.Value == '.')
             .Where(x => IsNextToLabel(label, grid, x.Key))
             .Select(x => x.Key)
-            .Single();
-    }
+            .ToArray();
 
-    private static string GetLabel((int Row, int Col) position, Dictionary<(int Row, int Col), char> grid)
+    private static string GetLabelAtPosition((int Row, int Col) position, Dictionary<(int Row, int Col), char> grid)
     {
-        // NOTE: this implementation assumes that you will never have two labels adjacent to each other
         var (row, col) = position;
+        var neighbors = GetNeighbors(row, col);
 
-        var neighbors = new[]
-        {
-            (row - 1, col),
-            (row + 1, col),
-            (row, col - 1),
-            (row, col + 1),
-        };
-
-        var letter1 = grid[(row, col)];
-        var letter2 = neighbors
-            .Select(n => grid.TryGetValue(n, out var v) ? v : ' ')
-            .Single(char.IsUpper);
+        var letter1 = grid[position];
+        var letter2 = neighbors.Select(grid.GetValueOrDefault).Single(char.IsUpper);
 
         var letters = new[] { letter1, letter2 };
 
         return string.Join("", letters.OrderBy(c => c));
     }
 
-    private static (int Row, int Col) FindMatchingLabel(string label, Dictionary<(int Row, int Col), char> grid,
-        (int Row, int Col) position)
-    {
-        return FindLabelPair(label, grid).Single(x => x != position);
-    }
-
-    private static (int Row, int Col)[] FindLabelPair(string label, Dictionary<(int Row, int Col), char> grid)
-    {
-        return grid.Where(x => x.Value == '.')
-            .Where(x => IsNextToLabel(label, grid, x.Key))
-            .Select(x => x.Key)
-            .ToArray();
-    }
+    private static (int Row, int Col) GetPositionOfMatchingLabel(
+        string label,
+        (int Row, int Col) position,
+        Dictionary<(int Row, int Col), char> grid) => GetPositionsForLabel(label, grid).Single(x => x != position);
 
     private static bool IsNextToLabel(
         string label,
@@ -146,55 +130,20 @@ public static class Day20
         (int Row, int Col) position)
     {
         var (row, col) = position;
-
-        var neighbors = new[]
-        {
-            (row - 1, col),
-            (row + 1, col),
-            (row, col - 1),
-            (row, col + 1),
-        };
+        var neighbors = GetNeighbors(row, col);
 
         var values = label.ToArray();
-
-        if (values.Length != 2)
-        {
-            throw new Exception("Label must be 2 characters long");
-        }
-
         var (value1, value2) = values;
 
-        var foo = neighbors.FirstOrDefault(n =>
-            grid.TryGetValue(n, out var v) && v == value1 &&
-            IsNextToValue(value2, grid, n));
-
-        if (foo == default)
-        {
-            foo = neighbors.FirstOrDefault(n =>
-                grid.TryGetValue(n, out var v) && v == value2 &&
-                IsNextToValue(value1, grid, n));
-        }
-
-        if (foo == default)
-        {
-            return false;
-        }
-
-        return true;
+        return neighbors.Any(n => grid.GetValueOrDefault(n) == value1 && IsNextToValue(value2, n, grid)) ||
+               neighbors.Any(n => grid.GetValueOrDefault(n) == value2 && IsNextToValue(value1, n, grid));
     }
 
-    private static bool IsNextToValue(char value, Dictionary<(int Row, int Col), char> grid, (int, int) position)
+    private static bool IsNextToValue(char value, (int, int) position, Dictionary<(int Row, int Col), char> grid)
     {
         var (row, col) = position;
+        var neighbors = GetNeighbors(row, col);
 
-        var neighbors = new[]
-        {
-            (row - 1, col),
-            (row + 1, col),
-            (row, col - 1),
-            (row, col + 1),
-        };
-
-        return neighbors.Any(n => grid.TryGetValue(n, out var v) && v == value);
+        return neighbors.Any(n => grid.GetValueOrDefault(n) == value);
     }
 }
