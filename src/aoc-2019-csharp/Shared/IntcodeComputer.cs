@@ -34,6 +34,8 @@ public class IntcodeComputer
 
     public bool HasHalted { get; private set; }
 
+    public bool HasInput => _inputs.Any();
+
     public long Output => _outputs.Last();
 
     public long Run(long? noun = null, long? verb = null)
