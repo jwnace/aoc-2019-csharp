@@ -11,7 +11,7 @@ public static class Day24
     public static int Solve1(string[] input)
     {
         var grid = BuildGrid(input);
-        var newGrid = new Dictionary<(int Row, int Col), bool>();
+        var newGrid = new HashSet<(int Row, int Col)>();
         var seen = new HashSet<int>();
 
         while (true)
@@ -28,9 +28,17 @@ public static class Day24
                         (row, col + 1),
                     };
 
-                    var adjacentBugs = neighbors.Count(n => grid.GetValueOrDefault(n));
+                    var adjacentBugs = neighbors.Count(n => grid.Contains(n));
+                    var value = grid.Contains((row, col));
 
-                    newGrid[(row, col)] = adjacentBugs == 1 || !grid[(row, col)] && adjacentBugs == 2;
+                    if (adjacentBugs == 1 || !value && adjacentBugs == 2)
+                    {
+                        newGrid.Add((row, col));
+                    }
+                    else
+                    {
+                        newGrid.Remove((row, col));
+                    }
                 }
             }
 
@@ -47,50 +55,369 @@ public static class Day24
 
     public static int Solve2(string[] input, int minutes)
     {
-        var grid = BuildGrid(input);
-        var newGrid = new Dictionary<(int Row, int Col), bool>();
+        var grid = new HashSet<(int Row, int Col, int Level)>();
+
+        for (var row = 0; row < input.Length; row++)
+        {
+            for (var col = 0; col < input[row].Length; col++)
+            {
+                if (input[row][col] == '#')
+                {
+                    grid.Add((row, col, 0));
+                }
+            }
+        }
+
+        var newGrid = new HashSet<(int Row, int Col, int Level)>();
 
         for (var i = 0; i < minutes; i++)
         {
-            for (var row = 0; row < input.Length; row++)
+            var minRow = grid.Min(x => x.Row);
+            var maxRow = grid.Max(x => x.Row);
+            var minCol = grid.Min(x => x.Col);
+            var maxCol = grid.Max(x => x.Col);
+            var minLevel = grid.Min(x => x.Level);
+            var maxLevel = grid.Max(x => x.Level);
+
+            for (var row = minRow; row <= maxRow; row++)
             {
-                for (var col = 0; col < input[row].Length; col++)
+                for (var col = minCol; col <= maxCol; col++)
                 {
-                    var neighbors = new[]
+                    for (var level = minLevel - 1; level <= maxLevel + 1; level++)
                     {
-                        (row - 1, col),
-                        (row + 1, col),
-                        (row, col - 1),
-                        (row, col + 1),
-                    };
+                        var neighbors = GetNeighbors(row, col, level);
+                        var adjacentBugs = neighbors.Count(n => grid.Contains(n));
+                        var value = grid.Contains((row, col, level));
 
-                    var adjacentBugs = neighbors.Count(n => grid.GetValueOrDefault(n));
-
-                    newGrid[(row, col)] = adjacentBugs == 1 || !grid[(row, col)] && adjacentBugs == 2;
+                        if (adjacentBugs == 1 || !value && adjacentBugs == 2)
+                        {
+                            newGrid.Add((row, col, level));
+                        }
+                        else
+                        {
+                            newGrid.Remove((row, col, level));
+                        }
+                    }
                 }
             }
 
             (grid, newGrid) = (newGrid, grid);
         }
 
-        return grid.Count(x => x.Value);
+        DrawGrid(grid);
+        return grid.Count;
     }
 
-    private static Dictionary<(int Row, int Col), bool> BuildGrid(string[] input)
+    private static void DrawGrid(HashSet<(int Row, int Col, int Level)> grid)
     {
-        var grid = new Dictionary<(int Row, int Col), bool>();
+        var minRow = grid.Min(x => x.Row);
+        var maxRow = grid.Max(x => x.Row);
+        var minCol = grid.Min(x => x.Col);
+        var maxCol = grid.Max(x => x.Col);
+        var minLevel = grid.Min(x => x.Level);
+        var maxLevel = grid.Max(x => x.Level);
+
+        for (var level = minLevel; level <= maxLevel; level++)
+        {
+            Console.WriteLine($"Depth {level}:");
+
+            for (var row = minRow; row <= maxRow; row++)
+            {
+                for (var col = minCol; col <= maxCol; col++)
+                {
+                    if ((row, col) == (2, 2))
+                    {
+                        Console.Write('?');
+                        continue;
+                    }
+
+                    Console.Write(grid.Contains((row, col, level)) ? '#' : '.');
+                }
+
+                Console.WriteLine();
+            }
+
+            Console.WriteLine();
+        }
+    }
+
+    private static (int Row, int Col, int Level)[] GetNeighbors(int row, int col, int level)
+    {
+        var sameLevel = new[]
+        {
+            (row - 1, col, level),
+            (row + 1, col, level),
+            (row, col - 1, level),
+            (row, col + 1, level),
+        };
+
+        if (row == 0 && col == 0)
+        {
+            var outerLevel = new[]
+            {
+                (1, 2, level - 1),
+                (2, 1, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 0 && col == 1)
+        {
+            var outerLevel = new[]
+            {
+                (1, 2, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 0 && col == 2)
+        {
+            var outerLevel = new[]
+            {
+                (1, 2, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 0 && col == 3)
+        {
+            var outerLevel = new[]
+            {
+                (1, 2, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 0 && col == 4)
+        {
+            var outerLevel = new[]
+            {
+                (1, 2, level - 1),
+                (2, 3, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 1 && col == 0)
+        {
+            var outerLevel = new[]
+            {
+                (2, 1, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 1 && col == 1)
+        {
+            return sameLevel.ToArray();
+        }
+
+        if (row == 1 && col == 2)
+        {
+            var innerLevel = new[]
+            {
+                (0, 0, level + 1),
+                (0, 1, level + 1),
+                (0, 2, level + 1),
+                (0, 3, level + 1),
+                (0, 4, level + 1),
+            };
+
+            return sameLevel.Concat(innerLevel).ToArray();
+        }
+
+        if (row == 1 && col == 3)
+        {
+            return sameLevel.ToArray();
+        }
+
+        if (row == 1 && col == 4)
+        {
+            var outerLevel = new[]
+            {
+                (2, 3, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 2 && col == 0)
+        {
+            var outerLevel = new[]
+            {
+                (2, 1, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 2 && col == 1)
+        {
+            var innerLevel = new[]
+            {
+                (0, 0, level + 1),
+                (1, 0, level + 1),
+                (2, 0, level + 1),
+                (3, 0, level + 1),
+                (4, 0, level + 1),
+            };
+
+            return sameLevel.Concat(innerLevel).ToArray();
+        }
+
+        if (row == 2 && col == 2)
+        {
+            // TODO: does this work?
+            return Array.Empty<(int Row, int Col, int Level)>();
+        }
+
+        if (row == 2 && col == 3)
+        {
+            var innerLevel = new[]
+            {
+                (0, 4, level + 1),
+                (1, 4, level + 1),
+                (2, 4, level + 1),
+                (3, 4, level + 1),
+                (4, 4, level + 1),
+            };
+
+            return sameLevel.Concat(innerLevel).ToArray();
+        }
+
+        if (row == 2 && col == 4)
+        {
+            var outerLevel = new[]
+            {
+                (2, 3, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 3 && col == 0)
+        {
+            var outerLevel = new[]
+            {
+                (2, 1, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 3 && col == 1)
+        {
+            return sameLevel.ToArray();
+        }
+
+        if (row == 3 && col == 2)
+        {
+            var innerLevel = new[]
+            {
+                (4, 0, level + 1),
+                (4, 1, level + 1),
+                (4, 2, level + 1),
+                (4, 3, level + 1),
+                (4, 4, level + 1),
+            };
+
+            return sameLevel.Concat(innerLevel).ToArray();
+        }
+
+        if (row == 3 && col == 3)
+        {
+            return sameLevel.ToArray();
+        }
+
+        if (row == 3 && col == 4)
+        {
+            var outerLevel = new[]
+            {
+                (2, 3, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 4 && col == 0)
+        {
+            var outerLevel = new[]
+            {
+                (3, 2, level - 1),
+                (2, 1, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 4 && col == 1)
+        {
+            var outerLevel = new[]
+            {
+                (3, 2, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 4 && col == 2)
+        {
+            var outerLevel = new[]
+            {
+                (3, 2, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 4 && col == 3)
+        {
+            var outerLevel = new[]
+            {
+                (3, 2, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        if (row == 4 && col == 4)
+        {
+            var outerLevel = new[]
+            {
+                (3, 2, level - 1),
+                (2, 3, level - 1),
+            };
+
+            return sameLevel.Concat(outerLevel).ToArray();
+        }
+
+        throw new Exception("Couldn't figure out neighbors!");
+    }
+
+    private static HashSet<(int Row, int Col)> BuildGrid(string[] input)
+    {
+        var grid = new HashSet<(int Row, int Col)>();
 
         for (var row = 0; row < input.Length; row++)
         {
             for (var col = 0; col < input[row].Length; col++)
             {
-                grid[(row, col)] = input[row][col] == '#';
+                if (input[row][col] == '#')
+                {
+                    grid.Add((row, col));
+                }
             }
         }
 
         return grid;
     }
 
-    private static int ComputeBiodiversity(Dictionary<(int Row, int Col), bool> newGrid, string[] input) =>
-        newGrid.Select(x => x.Value ? 1 << (x.Key.Row * input[x.Key.Row].Length + x.Key.Col) : 0).Sum();
+    private static int ComputeBiodiversity(HashSet<(int Row, int Col)> newGrid, string[] input) =>
+        newGrid.Select(x => 1 << (x.Row * input[x.Row].Length + x.Col)).Sum();
 }
